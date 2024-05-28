@@ -60,3 +60,8 @@ class EditRegionForm(FlaskForm):
     name = StringField('Region Name', validators=[DataRequired()])
     country_id = SelectField('Country', validators=[DataRequired()], coerce=int)
     submit = SubmitField('Edit Region')
+
+class GoogleSheetForm(FlaskForm):
+    sheet_id = StringField('Spreadsheet ID', validators=[DataRequired()])
+    sheet_name = StringField('Sheet Name', validators=[DataRequired()])
+    submit = SubmitField('Link Google Sheet')

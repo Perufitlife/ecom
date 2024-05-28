@@ -1,8 +1,41 @@
+<!-- app/templates/orders.html -->
 {% extends "base.html" %}
-
-{% block title %}Orders{% endblock %}
-
 {% block content %}
-<h2>Orders</h2>
-<p>This is the Orders page.</p>
+    <h2>Orders</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.sheet_id.label }}<br>
+            {{ form.sheet_id(size=40) }}
+        </p>
+        <p>
+            {{ form.sheet_name.label }}<br>
+            {{ form.sheet_name(size=40) }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <button onclick="location.href='{{ url_for('orders') }}'">Refresh</button>
+    <table border="1">
+        {% if data %}
+            <thead>
+                <tr>
+                    {% for header in data[0] %}
+                        <th>{{ header }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data[1:] %}
+                    <tr>
+                        {% for cell in row %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <p>No data available. Link a Google Sheet and click Refresh.</p>
+        {% endif %}
+    </table>
+    <button onclick="location.href='{{ url_for('delete_linked_sheet') }}'">Delete Table</button>
 {% endblock %}

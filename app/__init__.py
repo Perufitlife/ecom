@@ -1,3 +1,7 @@
+# app/__init__.py
+
+import os
+import pickle
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -21,7 +25,7 @@ def create_app():
     mail.init_app(app)
     csrf.init_app(app)
     login.init_app(app)
-    login.login_view = 'main.login'
+    login.login_view = 'main_bp.login'
 
     with app.app_context():
         from .routes import main_bp

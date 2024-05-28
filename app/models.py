@@ -14,6 +14,7 @@ class User(UserMixin, db.Model):
     products = db.relationship('Product', backref='user', lazy=True)
     countries = db.relationship('Country', backref='user', lazy=True)
     regions = db.relationship('Region', backref='user', lazy=True)
+    linked_sheets = db.relationship('LinkedSheet', backref='owner', lazy='dynamic')
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -67,3 +68,8 @@ class Region(db.Model):
     country_id = db.Column(db.Integer, db.ForeignKey('country.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
+class LinkedSheet(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sheet_id = db.Column(db.String(64))
+    sheet_name = db.Column(db.String(64))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
