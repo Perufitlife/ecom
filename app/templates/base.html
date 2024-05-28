@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                E-commerce Solution
+            </div>
+            <div class="navbar-user">
+                {% if current_user.is_authenticated %}
+                    <span>Welcome, {{ current_user.username }}!</span>
+                    <a href="{{ url_for('main.logout') }}" class="logout-link">
+                        <img src="{{ url_for('static', filename='images/logout-icon.png') }}" alt="Logout" class="logout-icon">
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="main-content">
+        <div class="sidebar">
+            <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+            <ul class="sidebar-menu">
+                <li><a href="{{ url_for('main.index') }}">
+                    <img src="{{ url_for('static', filename='images/dashboard-icon.png') }}" alt="Dashboard" class="menu-icon">
+                    <span>Dashboard</span>
+                </a></li>
+                <li><a href="{{ url_for('main.ads') }}">
+                    <img src="{{ url_for('static', filename='images/adss-icon.png') }}" alt="Ads" class="menu-icon">
+                    <span>Ads</span>
+                </a></li>
+                <li><a href="{{ url_for('main.orders') }}">
+                    <img src="{{ url_for('static', filename='images/orders-icon.png') }}" alt="Orders" class="menu-icon">
+                    <span>Orders</span>
+                </a></li>
+                <li><a href="{{ url_for('main.inventory') }}">
+                    <img src="{{ url_for('static', filename='images/inventory-icon.png') }}" alt="Inventory" class="menu-icon">
+                    <span>Inventory</span>
+                </a></li>
+                <li><a href="{{ url_for('main.analytics') }}">
+                    <img src="{{ url_for('static', filename='images/analytics-icon.png') }}" alt="Analytics" class="menu-icon">
+                    <span>Analytics</span>
+                </a></li>
+                <li><a href="{{ url_for('main.settings') }}">
+                    <img src="{{ url_for('static', filename='images/settings-icon.png') }}" alt="Settings" class="menu-icon">
+                    <span>Settings</span>
+                </a></li>
+            </ul>
+        </div>
+        <div class="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="alert">
+                        {% for category, message in messages %}
+                            <div class="alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    <footer>
+        &copy; 2024 E-commerce Solution. All rights reserved.
+    </footer>
+</body>
+</html>

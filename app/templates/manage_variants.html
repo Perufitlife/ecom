@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Variants{% endblock %}
+
+{% block content %}
+<h2>Manage Variants for {{ product.name }}</h2>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.name.label }}<br>
+        {{ form.name(size=32) }}<br>
+        {% for error in form.name.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+<ul>
+    {% for variant in variants %}
+    <li>{{ variant.name }}
+        <a href="{{ url_for('main.edit_variant', product_id=product.id, variant_id=variant.id) }}">Edit</a>
+        <form action="{{ url_for('main.delete_variant', product_id=product.id, variant_id=variant.id) }}" method="post" style="display:inline;">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit">Delete</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+<a href="{{ url_for('main.products') }}">Back to Products</a>
+{% endblock %}
