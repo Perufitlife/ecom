@@ -8,9 +8,29 @@
     <li>
         <h3>Registro de Nombres</h3>
         <ul>
-            <li><a href="{{ url_for('main.products') }}">Productos</a></li>
-            <li><a href="{{ url_for('main.countries') }}">Países</a></li>
-            <li><a href="{{ url_for('main.regions') }}">Regiones</a></li>
+            <li><a href="{{ url_for('main_bp.products') }}">Productos</a></li>
+            <li><a href="{{ url_for('main_bp.countries') }}">Países</a></li>
+            <li><a href="{{ url_for('main_bp.regions') }}">Regiones</a></li>
+        </ul>
+    </li>
+</ul>
+<ul>
+    <li>
+        <h3>Registro de Mapeos Sheet</h3>
+        <ul>
+            <li><a href="{{ url_for('main_bp.manage_product_mappings') }}">Productos Sheets</a></li>
+            <li><a href="{{ url_for('main_bp.manage_product_mappings') }}">Country Mappings</a></li>
+            <li><a href="{{ url_for('main_bp.manage_product_mappings') }}">Region Mappings</a></li>
+            </ul>
+    </li>
+</ul>
+<ul>
+    <li>
+        <h3>Registro de Mapeaos Ads</h3>
+        <ul>
+            <li><a href="{{ url_for('main_bp.products') }}">Productos</a></li>
+            <li><a href="{{ url_for('main_bp.countries') }}">Países</a></li>
+            <li><a href="{{ url_for('main_bp.regions') }}">Regiones</a></li>
         </ul>
     </li>
 </ul>

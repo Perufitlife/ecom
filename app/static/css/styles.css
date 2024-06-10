@@ -64,7 +64,7 @@ body, html {
 /* Sidebar Styles */
 .main-content {
     display: flex;
-    height: 100vh;
+    height: calc(100vh - 70px);
 }
 
 .sidebar {
@@ -73,6 +73,7 @@ body, html {
     color: white;
     flex-shrink: 0;
     transition: width 0.3s;
+    height: 100%;
 }
 
 .sidebar-menu {
@@ -119,6 +120,7 @@ body, html {
 .content {
     flex-grow: 1;
     padding: 20px;
+    overflow-y: auto;
 }
 
 .footer {
@@ -145,4 +147,30 @@ body, html {
 
 .sidebar.collapsed .sidebar-menu li a span {
     display: none;
+}
+
+/* Table Styles */
+.table-responsive {
+    max-height: calc(100vh - 180px); /* Adjust according to header/footer size */
+    overflow-y: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-hover tbody tr:hover {
+    color: #495057;
+    background-color: rgba(0,0,0,.075);
 }

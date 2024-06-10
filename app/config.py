@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+
 
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
@@ -13,5 +15,6 @@ class Config:
     GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID', '')
     GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET', '')
     GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
-    GOOGLE_CREDENTIALS = os.path.join(os.path.dirname(__file__), 'credentials.json')
+    GOOGLE_CREDENTIALS = os.getenv('GOOGLE_CREDENTIALS_PATH', 'credentials.json')
     os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+    WTF_CSRF_TIME_LIMIT = None  # Configura esto a None para no caducar, o a un número de segundos para ajustar la duración

@@ -1,5 +1,3 @@
-# app/__init__.py
-
 import os
 import pickle
 from flask import Flask
@@ -9,6 +7,7 @@ from flask_mail import Mail
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager
 from .config import Config
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -18,7 +17,7 @@ login = LoginManager()
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object(Config)
+    app.config.from_object('app.config.Config')
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -27,6 +26,9 @@ def create_app():
     login.init_app(app)
     login.login_view = 'main_bp.login'
 
+    # Configurar ProxyFix para manejar encabezados de proxy correctamente
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
+
     with app.app_context():
         from .routes import main_bp
         app.register_blueprint(main_bp)
@@ -34,3 +36,4 @@ def create_app():
         db.create_all()
 
     return app
+

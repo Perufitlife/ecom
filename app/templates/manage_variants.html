@@ -18,13 +18,12 @@
 <ul>
     {% for variant in variants %}
     <li>{{ variant.name }}
-        <a href="{{ url_for('main.edit_variant', product_id=product.id, variant_id=variant.id) }}">Edit</a>
-        <form action="{{ url_for('main.delete_variant', product_id=product.id, variant_id=variant.id) }}" method="post" style="display:inline;">
+        <a href="{{ url_for('main_bp.edit_variant', product_id=product.id, variant_id=variant.id) }}">Edit</a>
+        <form action="{{ url_for('main_bp.delete_variant', product_id=product.id, variant_id=variant.id) }}" method="post" style="display:inline;">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
             <button type="submit">Delete</button>
         </form>
     </li>
     {% endfor %}
 </ul>
-<a href="{{ url_for('main.products') }}">Back to Products</a>
 {% endblock %}

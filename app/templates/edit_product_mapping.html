@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}Edit Product Mapping{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Edit Product Mapping</h1>
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('main_bp.edit_product_mapping', mapping_id=mapping_id) }}">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    {{ form.product_id.label(class_='form-label') }}
+                    {{ form.product_id(class_='form-control') }}
+                </div>
+                <div class="form-group">
+                    {{ form.sheet_header.label(class_='form-label') }}
+                    {{ form.sheet_header(class_='form-control') }}
+                </div>
+                <div class="form-group">
+                    {{ form.sheet_products.label(class_='form-label') }}
+                    {{ form.sheet_products(class_='form-control', multiple=True) }}
+                </div>
+                <button type="submit" class="btn btn-primary">Update Mapping</button>
+            </form>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header">
+            <h3>Existing Mappings</h3>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Original Value</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for mapping in all_mappings %}
+                        <tr>
+                            <td>{{ mapping.original_value }}</td>
+                            <td>
+                                <form method="POST" action="{{ url_for('main_bp.delete_individual_mapping', mapping_id=mapping.id) }}" style="display:inline;">
+                                    {{ form.hidden_tag() }}
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        function loadSheetProducts(sheet_header) {
+            $.ajax({
+                url: "{{ url_for('main_bp.get_sheet_products', sheet_header='') }}" + sheet_header,
+                method: 'GET',
+                success: function(response) {
+                    var products = response.products;
+                    var $sheetProducts = $('select[name="sheet_products"]');
+                    $sheetProducts.empty();
+                    $.each(products, function(index, product) {
+                        $sheetProducts.append($('<option>', {
+                            value: product,
+                            text: product
+                        }));
+                    });
+                },
+                error: function(error) {
+                    console.error("Error loading sheet products:", error);
+                }
+            });
+        }
+
+        $('select[name="sheet_header"]').change(function() {
+            var selectedHeader = $(this).val();
+            loadSheetProducts(selectedHeader);
+        });
+
+        // Cargar los productos de la hoja al cargar la página si ya hay un encabezado seleccionado
+        var initialHeader = $('select[name="sheet_header"]').val();
+        if (initialHeader) {
+            loadSheetProducts(initialHeader);
+        }
+    });
+</script>
+
+{% endblock %}

@@ -7,4 +7,4 @@ load_dotenv()  # Cargar variables de entorno desde el archivo .env
 app = create_app()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run('localhost', 5000, debug=True)

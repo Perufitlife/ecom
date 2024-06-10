@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <h1>Mapeo de Anuncios</h1>
+    <form method="POST" action="{{ url_for('main_bp.manage_ad_mappings') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.product_id.label }}
+            {{ form.product_id(class_='form-control') }}
+        </div>
+        <div class="form-group">
+            {{ form.keywords.label }}
+            {% for keyword in form.keywords %}
+            <div class="input-group mb-3">
+                {{ keyword.keyword(class_='form-control') }}
+                <div class="input-group-append">
+                    <button class="btn btn-danger" type="button" onclick="removeKeyword(this)">Eliminar</button>
+                </div>
+            </div>
+            {% endfor %}
+            <button class="btn btn-secondary" type="button" onclick="addKeyword()">Agregar Palabra Clave</button>
+        </div>
+        <button type="submit" class="btn btn-primary">Mapear</button>
+    </form>
+
+    <h2>Anuncios Mapeados</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th>Palabras Clave</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product_id, mapping in grouped_mappings.items() %}
+            <tr>
+                <td>{{ mapping.product }}</td>
+                <td>{{ mapping.keywords|join(', ') }}</td>
+                <td>
+                    <a href="{{ url_for('main_bp.edit_ad_mapping', product_id=product_id) }}" class="btn btn-secondary">Editar</a>
+                    <form method="POST" action="{{ url_for('main_bp.delete_ad_mapping', product_id=product_id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    function addKeyword() {
+        const keywordGroup = document.createElement('div');
+        keywordGroup.className = 'input-group mb-3';
+        keywordGroup.innerHTML = `
+            <input type="text" name="keywords-0-keyword" class="form-control">
+            <div class="input-group-append">
+                <button class="btn btn-danger" type="button" onclick="removeKeyword(this)">Eliminar</button>
+            </div>
+        `;
+        document.querySelector('[name="keywords"]').appendChild(keywordGroup);
+    }
+
+    function removeKeyword(button) {
+        button.closest('.input-group').remove();
+    }
+</script>
+{% endblock %}

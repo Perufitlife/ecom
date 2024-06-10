@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Cuentas Vinculadas</h2>
+    <div class="mb-3">
+        <a href="{{ url_for('main_bp.add_facebook_account') }}" class="btn btn-primary">Vincular Cuenta de Facebook</a>
+        <a href="{{ url_for('main_bp.add_tiktok_account') }}" class="btn btn-primary">Vincular Cuenta de TikTok</a>
+    </div>
+    
+    {% if accounts %}
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre de la Cuenta</th>
+                    <th>Tipo de Cuenta</th>
+                    <th>Fecha de Vinculación</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for account in accounts %}
+                    <tr>
+                        <td>{{ account.name }}</td>
+                        <td>{{ account.account_type }}</td>
+                        <td>{{ account.linked_date.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('main_bp.edit_account', account_id=account.id) }}" class="btn btn-sm btn-primary">Editar</a>
+                            <form action="{{ url_for('main_bp.delete_account', account_id=account.id) }}" method="post" style="display:inline;">
+                                {{ form.hidden_tag() }}
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que quieres eliminar esta cuenta?');">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No hay cuentas vinculadas.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,41 +1,66 @@
-<!-- app/templates/orders.html -->
 {% extends "base.html" %}
+{% block title %}Orders{% endblock %}
 {% block content %}
-    <h2>Orders</h2>
-    <form method="POST">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.sheet_id.label }}<br>
-            {{ form.sheet_id(size=40) }}
-        </p>
-        <p>
-            {{ form.sheet_name.label }}<br>
-            {{ form.sheet_name(size=40) }}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <button onclick="location.href='{{ url_for('orders') }}'">Refresh</button>
-    <table border="1">
-        {% if data %}
-            <thead>
-                <tr>
-                    {% for header in data[0] %}
-                        <th>{{ header }}</th>
-                    {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data[1:] %}
-                    <tr>
-                        {% for cell in row %}
-                            <td>{{ cell }}</td>
-                        {% endfor %}
-                    </tr>
-                {% endfor %}
-            </tbody>
-        {% else %}
-            <p>No data available. Link a Google Sheet and click Refresh.</p>
-        {% endif %}
-    </table>
-    <button onclick="location.href='{{ url_for('delete_linked_sheet') }}'">Delete Table</button>
+<div class="container-fluid mt-5">
+    <h1 class="mb-4">Orders</h1>
+    {% if linked_sheet %}
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3>Linked Sheet: {{ linked_sheet.sheet_name }}</h3>
+                <div>
+                    <form method="post" action="{{ url_for('main_bp.unlink_sheet') }}" class="d-inline">
+                        {{ form.hidden_tag() }}
+                        <button type="submit" class="btn btn-warning">Unlink Sheet</button>
+                    </form>
+                    <form method="get" action="{{ url_for('main_bp.refresh_sheet_data') }}" class="d-inline">
+                        <button type="submit" class="btn btn-success">Refresh Data</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                {% for header in headers %}
+                                <th>{{ header }}</th>
+                                {% endfor %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data %}
+                            <tr>
+                                {% for cell in row %}
+                                <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination justify-content-center">
+                    {{ pagination.links }}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-header">
+                <h3>Link a Google Sheet</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.sheet_id.label }} {{ form.sheet_id(class="form-control") }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.sheet_name.label }} {{ form.sheet_name(class="form-control") }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">Link Sheet</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

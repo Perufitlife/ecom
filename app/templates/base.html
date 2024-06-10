@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+    </script>
     <script src="{{ url_for('static', filename='js/scripts.js') }}" defer></script>
 </head>
 <body>
@@ -16,7 +29,7 @@
             <div class="navbar-user">
                 {% if current_user.is_authenticated %}
                     <span>Welcome, {{ current_user.username }}!</span>
-                    <a href="{{ url_for('main.logout') }}" class="logout-link">
+                    <a href="{{ url_for('main_bp.logout') }}" class="logout-link">
                         <img src="{{ url_for('static', filename='images/logout-icon.png') }}" alt="Logout" class="logout-icon">
                     </a>
                 {% endif %}
@@ -27,27 +40,27 @@
         <div class="sidebar">
             <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
             <ul class="sidebar-menu">
-                <li><a href="{{ url_for('main.index') }}">
+                <li><a href="{{ url_for('main_bp.dashboard') }}">
                     <img src="{{ url_for('static', filename='images/dashboard-icon.png') }}" alt="Dashboard" class="menu-icon">
                     <span>Dashboard</span>
                 </a></li>
-                <li><a href="{{ url_for('main.ads') }}">
+                <li><a href="{{ url_for('main_bp.ads') }}">
                     <img src="{{ url_for('static', filename='images/adss-icon.png') }}" alt="Ads" class="menu-icon">
                     <span>Ads</span>
                 </a></li>
-                <li><a href="{{ url_for('main.orders') }}">
+                <li><a href="{{ url_for('main_bp.orders') }}">
                     <img src="{{ url_for('static', filename='images/orders-icon.png') }}" alt="Orders" class="menu-icon">
                     <span>Orders</span>
                 </a></li>
-                <li><a href="{{ url_for('main.inventory') }}">
+                <li><a href="{{ url_for('main_bp.inventory') }}">
                     <img src="{{ url_for('static', filename='images/inventory-icon.png') }}" alt="Inventory" class="menu-icon">
                     <span>Inventory</span>
                 </a></li>
-                <li><a href="{{ url_for('main.analytics') }}">
+                <li><a href="{{ url_for('main_bp.analytics') }}">
                     <img src="{{ url_for('static', filename='images/analytics-icon.png') }}" alt="Analytics" class="menu-icon">
                     <span>Analytics</span>
                 </a></li>
-                <li><a href="{{ url_for('main.settings') }}">
+                <li><a href="{{ url_for('main_bp.settings') }}">
                     <img src="{{ url_for('static', filename='images/settings-icon.png') }}" alt="Settings" class="menu-icon">
                     <span>Settings</span>
                 </a></li>

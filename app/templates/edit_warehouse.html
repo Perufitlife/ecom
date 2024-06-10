@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Edit Warehouse: {{ warehouse.name }}</h1>
+    <form method="POST" action="{{ url_for('main_bp.edit_warehouse', warehouse_id=warehouse.id) }}">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.name.label }}<br>
+            {{ form.name() }}
+        </p>
+        <p>
+            {{ form.country_id.label }}<br>
+            {{ form.country_id() }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    
+    <h2>Add Product to Warehouse</h2>
+    <form id="addProductForm">
+        {{ product_form.hidden_tag() }}
+        <p>
+            {{ product_form.product_id.label }}<br>
+            {{ product_form.product_id(id='product_id') }}
+        </p>
+        <p>
+            {{ product_form.variant_id.label }}<br>
+            {{ product_form.variant_id(id='variant_id') }}
+        </p>
+        <p>
+            {{ product_form.quantity.label }}<br>
+            {{ product_form.quantity() }}
+        </p>
+        <p>
+            {{ product_form.cost.label }}<br>
+            {{ product_form.cost() }}
+        </p>
+        <p>{{ product_form.submit() }}</p>
+    </form>
+    
+    <h2>Products in Warehouse</h2>
+    <ul id="warehouseProductsList">
+    {% for wp in warehouse_products %}
+        <li>
+            {{ wp.product.name }} - {{ wp.variant.name if wp.variant else 'No Variant' }} - Quantity: {{ wp.quantity }} - Cost: {{ wp.cost }}
+            <form method="POST" action="{{ url_for('main_bp.delete_warehouse_product', warehouse_id=warehouse.id, warehouse_product_id=wp.id) }}" style="display: inline;">
+                {{ delete_form.hidden_tag() }}
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+            <a href="{{ url_for('main_bp.edit_warehouse_product', warehouse_id=warehouse.id, warehouse_product_id=wp.id) }}" class="btn btn-primary btn-sm">Edit</a>
+        </li>
+    {% endfor %}
+    </ul>
+
+    <a href="{{ url_for('main_bp.warehouses') }}">Back to Warehouses</a>
+
+    <script>
+        document.getElementById('product_id').addEventListener('change', function() {
+            var productId = this.value;
+            fetch(`/get_variants/${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    var variantSelect = document.getElementById('variant_id');
+                    variantSelect.innerHTML = '<option value="0">No Variant</option>';
+                    data.variants.forEach(function(variant) {
+                        var option = document.createElement('option');
+                        option.value = variant.id;
+                        option.text = variant.name;
+                        variantSelect.appendChild(option);
+                    });
+                });
+        });
+
+        document.getElementById('addProductForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevenir el envío del formulario por defecto
+            var formData = new FormData(this);
+            
+            fetch('{{ url_for("main_bp.add_warehouse_product", warehouse_id=warehouse.id) }}', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Limpiar el formulario
+                    document.getElementById('addProductForm').reset();
+                    // Recargar la lista de productos en el almacén
+                    loadWarehouseProducts();
+                } else {
+                    // Manejar errores, si hay alguno
+                    alert(data.error);
+                }
+            });
+        });
+
+        function loadWarehouseProducts() {
+            fetch('{{ url_for("main_bp.get_warehouse_products", warehouse_id=warehouse.id) }}')
+                .then(response => response.json())
+                .then(data => {
+                    var productList = document.getElementById('warehouseProductsList');
+                    productList.innerHTML = '';
+                    data.products.forEach(function(product) {
+                        var listItem = document.createElement('li');
+                        listItem.innerHTML = `${product.name} - ${product.variant || 'No Variant'} - Quantity: ${product.quantity} - Cost: ${product.cost}
+                        <form method="POST" action="/warehouses/${product.warehouse_id}/delete_product/${product.id}" style="display: inline;">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                        <a href="/warehouses/${product.warehouse_id}/edit_product/${product.id}" class="btn btn-primary btn-sm">Edit</a>`;
+                        productList.appendChild(listItem);
+                    });
+                });
+        }
+    </script>
+{% endblock %}
